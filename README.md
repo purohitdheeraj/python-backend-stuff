@@ -8,35 +8,33 @@ Lightweight starter template for learning and building Python backends with:
 
 ## Quick Start
 
-1. Create your env file:
-   - `cp .env.example .env`
+1. Create env file: `cp .env.example .env`
 2. Update DB credentials in `.env`
-3. Create virtual environment:
-   - `make venv`
-4. Install dependencies:
-   - `make install`
-5. Start MySQL (macOS/Homebrew):
-   - `make mysql-start`
-6. Create tables:
-   - `make db-init`
-7. Seed demo data:
-   - `make db-seed`
+3. Create virtual environment: `make venv`
+4. Install dependencies: `make install`
+5. Start MySQL (macOS/Homebrew): `make mysql-start`
+
 
 ## Available Commands
 
 - `make help` - list all commands
+- `make venv` - create local virtual environment
+- `make activate` - print activation command
 - `make install` - install Python dependencies
-- `make run` - run HTTP example script
-- `make db-init` - create tables
-- `make db-seed` - insert default user safely
-- `make db-query` - query and update user
-- `make db-flush` - delete all rows in `village` table
+- `make db-check` - verify database connection
+- `make db-init` - create DB tables from models
+- `make freeze` - update `requirements.txt` from installed deps
 - `make mysql-start` - start MySQL via Homebrew
 - `make mysql-stop` - stop MySQL via Homebrew
 - `make mysql-status` - view MySQL service status
 
-## Notes
+## Typical Flow
 
-- `db-seed` is idempotent by email unless `--force` is used.
-- `db-query` handles "user not found" safely.
-- `db-flush` asks confirmation by default; Makefile uses `--yes`.
+```bash
+make venv
+source venv/bin/activate
+make install
+make mysql-start
+make db-check
+make db-init
+```
