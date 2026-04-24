@@ -4,7 +4,7 @@ VENV ?= venv
 VENV_PYTHON = $(VENV)/bin/python
 VENV_PIP = $(VENV_PYTHON) -m pip
 
-.PHONY: help venv activate install run db-seed db-query db-flush http-test freeze clean mysql-start mysql-stop mysql-status
+.PHONY: help venv activate install run db-init db-seed db-query db-flush http-test freeze clean mysql-start mysql-stop mysql-status
 
 help:
 	@echo "Available tasks:"
@@ -12,6 +12,7 @@ help:
 	@echo "  make activate   - Print command to activate virtual environment"
 	@echo "  make install    - Install dependencies from requirements.txt"
 	@echo "  make run        - Run default script (my_http_test.py)"
+	@echo "  make db-init    - Create DB tables from SQLAlchemy models"
 	@echo "  make db-seed    - Insert sample user (data.py)"
 	@echo "  make db-query   - Run update/delete sample query (query.py)"
 	@echo "  make db-flush   - Delete all rows from village table"
@@ -35,6 +36,9 @@ install:
 run:
 	$(VENV_PYTHON) my_http_test.py
 
+db-init:
+	$(VENV_PYTHON) -c "from connection import create_tables; create_tables(); print('Tables ensured')"
+
 db-seed:
 	$(VENV_PYTHON) data.py
 
@@ -42,7 +46,7 @@ db-query:
 	$(VENV_PYTHON) query.py
 
 db-flush:
-	$(VENV_PYTHON) flush_db.py
+	$(VENV_PYTHON) flush_db.py --yes
 
 http-test:
 	$(VENV_PYTHON) my_http_test.py
