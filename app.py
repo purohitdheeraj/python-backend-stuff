@@ -10,16 +10,30 @@ load_dotenv()
 
 
 def _build_db_url() -> str:
-    db_user = os.getenv("DB_USER", "root")
-    db_password = os.getenv("DB_PASSWORD") or os.getenv("DB_PASSWORD")
-    db_host = os.getenv("DB_HOST", "localhost")
-    db_port = os.getenv("DB_PORT", "3306")
-    db_name = os.getenv("DB_NAME", "flask_api_db")
+    # Prefer a fully dynamic single URL if provided.
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        return database_url
 
-    if not db_password:
-        raise ValueError(
-            "Missing DB password. Set DB_PASSWORD (or MY_SQL_PASSWORD) in your .env file."
-        )
+    db_user = os.getenv("DB_USER")
+    db_password = os.getenv("DB_PASSWORD") or os.getenv("MY_SQL_PASSWORD")
+    db_host = os.getenv("DB_HOST")
+    db_port = os.getenv("DB_PORT")
+    db_name = os.getenv("DB_NAME")
+
+    missing = [
+        key
+        for key, value in {
+            "DB_USER": db_user,
+            "DB_PASSWORD": db_password,
+            "DB_HOST": db_host,
+            "DB_PORT": db_port,
+            "DB_NAME": db_name,
+        }.items()
+        if not value
+    ]
+    if missing:
+        raise ValueError(f"Missing required DB env vars: {', '.join(missing)}")
 
     safe_password = quote_plus(db_password)
     return (
